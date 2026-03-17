@@ -37,42 +37,24 @@ class CodeFormerONNX:
         smooth = srcimg.copy()
         
         if beauty_level > 0:
-            h, w = srcimg.shape[:2]
+            # 1. TIÊU DIỆT MỤN TO: Dùng thuật toán Median Blur chà bằng các khối mụn viêm đỏ lớn nhất
+            smooth = cv2.medianBlur(smooth, 5) 
             
-            # Tính toán kích thước cọ mụn tỷ lệ thuận với kích thước khuôn mặt (chống bị wash-out mặt nhỏ)
-            k_size = max(3, int(w * 0.03))
-            if k_size % 2 == 0: k_size += 1
-            d_size = max(5, int(w * 0.05))
-
-            # 1. TIÊU DIỆT MỤN TO
-            smooth = cv2.medianBlur(smooth, k_size) 
-            
-            # 2. BÀO PHẲNG DA
+            # 2. BÀO PHẲNG DA: là đều màu thâm sẹo bằng Bilateral nhiều lớp
             for _ in range(3):
-                smooth = cv2.bilateralFilter(smooth, d_size, 75, 75)
+                smooth = cv2.bilateralFilter(smooth, 15, 75, 75)
             
-            # 3. Kéo lại nét viền (mắt, mũi, môi) bớt lờ mờ do cà phấn
+            # 3. Kéo lại nét viền (mắt, mũi, môi) bị mờ do bước cà phấn
             gaussian = cv2.GaussianBlur(smooth, (0,0), 3.0)
             sharpened = cv2.addWeighted(smooth, 1.5, gaussian, -0.5, 0)
             
-            # 4. Tính toán độ mix mụn và nền:
+            # 4. TRỘN ẢNH: Nếu beauty=1.0, tiêu diệt 100% không cho ảnh gốc có mụn trộn ngược lại.
+            # Trộn thuận thiên theo mức chọn. Ví dụ beauty=0.85 thì chỉ lấy lại vỏn vẹn 15% da gốc.
             blend_original = max(0.0, 1.0 - beauty_level)
             if blend_original > 0:
-                beauty_face = cv2.addWeighted(sharpened, 1.0 - blend_original, srcimg, blend_original, 0)
+                pre_processed_img = cv2.addWeighted(sharpened, 1.0 - blend_original, srcimg, blend_original, 0)
             else:
-                beauty_face = sharpened
-                
-            # 5. KHẮC PHỤC QUẦNG MỜ (HALO BLUR): 
-            # Chỉ đánh phấn vùng Elip (trung tâm mặt). 
-            # Áo, viền tóc, cảnh vật background bên trong box phải chừa lại y nguyên 100% không bị làm mờ.
-            face_mask = np.zeros((h, w), dtype=np.float32)
-            cv2.ellipse(face_mask, (w//2, h//2), (int(w*0.35), int(h*0.42)), 0, 0, 360, 1.0, -1)
-            blur_r = max(3, int(w * 0.1))
-            if blur_r % 2 == 0: blur_r += 1
-            face_mask = cv2.GaussianBlur(face_mask, (blur_r, blur_r), 0)
-            face_mask = np.stack([face_mask]*3, axis=2)
-            
-            pre_processed_img = (srcimg * (1.0 - face_mask) + beauty_face * face_mask).astype(np.uint8)
+                pre_processed_img = sharpened
         else:
             pre_processed_img = srcimg
 
