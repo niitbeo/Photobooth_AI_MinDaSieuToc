@@ -37,24 +37,13 @@ class CodeFormerONNX:
         smooth = srcimg.copy()
         
         if beauty_level > 0:
-            # 1. TIÊU DIỆT MỤN TO: Dùng thuật toán Median Blur chà bằng các khối mụn viêm đỏ lớn nhất
-            smooth = cv2.medianBlur(smooth, 5) 
-            
-            # 2. BÀO PHẲNG DA: là đều màu thâm sẹo bằng Bilateral nhiều lớp
             for _ in range(3):
-                smooth = cv2.bilateralFilter(smooth, 15, 75, 75)
-            
-            # 3. Kéo lại nét viền (mắt, mũi, môi) bị mờ do bước cà phấn
+                smooth = cv2.bilateralFilter(smooth, 15, 60, 60)
+            # Phủ lại một lớp làm nét nhẹ để lấy lại chi tiết tóc/mắt bị mờ do cà mụn
             gaussian = cv2.GaussianBlur(smooth, (0,0), 3.0)
             sharpened = cv2.addWeighted(smooth, 1.5, gaussian, -0.5, 0)
-            
-            # 4. TRỘN ẢNH: Nếu beauty=1.0, tiêu diệt 100% không cho ảnh gốc có mụn trộn ngược lại.
-            # Trộn thuận thiên theo mức chọn. Ví dụ beauty=0.85 thì chỉ lấy lại vỏn vẹn 15% da gốc.
-            blend_original = max(0.0, 1.0 - beauty_level)
-            if blend_original > 0:
-                pre_processed_img = cv2.addWeighted(sharpened, 1.0 - blend_original, srcimg, blend_original, 0)
-            else:
-                pre_processed_img = sharpened
+            # Trộn với ảnh gốc để có làn da mịn tự nhiên
+            pre_processed_img = cv2.addWeighted(sharpened, beauty_level, srcimg, 1.0 - beauty_level, 0)
         else:
             pre_processed_img = srcimg
 
