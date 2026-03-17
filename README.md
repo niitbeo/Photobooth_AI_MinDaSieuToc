@@ -6,7 +6,17 @@
 > 
 > ☕ **Bonus ly cafe sáng:** Nếu source code siêu việt này giúp hệ thống Photobooth của bạn chạy mượt mà và kiếm được nhiều tiền, hãy mời tác giả một ly cafe sáng nhé! Cảm ơn bạn rất nhiều!
 > 
-> ![Ủng hộ Cafe Sáng](nganhag.png)
+> <div align="center">
+>   <img src="nganhag.png" width="300" alt="Mã QR Ủng hộ Cafe Sáng">
+> </div>
+
+## 📸 Hình ảnh Thực tế (Trước - Sau)
+Bản siêu tốc này tích hợp thuật toán **Lõi kép**: Càn quét mụn rỗ bằng **Máy Cà Phấn OpenCV** trước khi đưa cho **Lõi AI CodeFormer** vẽ lại nét siêu thực (tránh hoàn toàn hiện tượng ảo giác rỗ mặt của AI gốc).
+<div align="center">
+  <img src="SoSanh_MunMax_Combo.jpg" width="800" alt="Kết quả xóa mụn 1">
+  <br><br>
+  <img src="SoSanh_HienTuong.jpg" width="800" alt="Kết quả xóa mụn 2">
+</div>
 
 ## 🚀 Tính năng nổi bật
 * **Không cần PyTorch/CUDA**: Chạy độc quyền bằng ONNX Runtime dựa vào sức mạnh thuần của CPU đa luồng.
