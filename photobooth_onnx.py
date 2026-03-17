@@ -32,34 +32,9 @@ class CodeFormerONNX:
         return img_np
 
     def process_face(self, srcimg, weight=0.7, beauty_level=0.85):
-        # TIỀN XỬ LÝ: Tẩy mụn siêu tốc bằng thuật toán Nhiếp Ảnh (App Filter 360)
-        # Giúp làm nhẵn các ổ mụn rỗ và lỗ chân lông to, tránh việc AI nhìn nhầm thành nếp nhăn
-        smooth = srcimg.copy()
-        
-        if beauty_level > 0:
-            # 1. TIÊU DIỆT MỤN TO: Dùng thuật toán Median Blur chà bằng các khối mụn viêm đỏ lớn nhất
-            smooth = cv2.medianBlur(smooth, 5) 
-            
-            # 2. BÀO PHẲNG DA: là đều màu thâm sẹo bằng Bilateral nhiều lớp
-            for _ in range(3):
-                smooth = cv2.bilateralFilter(smooth, 15, 75, 75)
-            
-            # 3. Kéo lại nét viền (mắt, mũi, môi) bị mờ do bước cà phấn
-            gaussian = cv2.GaussianBlur(smooth, (0,0), 3.0)
-            sharpened = cv2.addWeighted(smooth, 1.5, gaussian, -0.5, 0)
-            
-            # 4. TRỘN ẢNH: Nếu beauty=1.0, tiêu diệt 100% không cho ảnh gốc có mụn trộn ngược lại.
-            # Trộn thuận thiên theo mức chọn. Ví dụ beauty=0.85 thì chỉ lấy lại vỏn vẹn 15% da gốc.
-            blend_original = max(0.0, 1.0 - beauty_level)
-            if blend_original > 0:
-                pre_processed_img = cv2.addWeighted(sharpened, 1.0 - blend_original, srcimg, blend_original, 0)
-            else:
-                pre_processed_img = sharpened
-        else:
-            pre_processed_img = srcimg
-
-        # Bây giờ mới ném khuôn mặt đã "đánh phấn mịn" này cho CodeFormer để nó làm cực sắc nét lại mắt/mũi/miệng
-        dstimg = cv2.cvtColor(pre_processed_img, cv2.COLOR_BGR2RGB)
+        # Đã TẮT TOÀN BỘ thuật toán cà mụn OpenCV theo yêu cầu để giữ nguyên 100% kết cấu gốc của mắt/môi.
+        # Bây giờ máy sẽ chạy LÕI CODEFORMER ONNX thuần túy, độ an toàn và chính xác chi tiết là tuyệt đối.
+        dstimg = cv2.cvtColor(srcimg, cv2.COLOR_BGR2RGB)
         dstimg = cv2.resize(dstimg, (self.inpwidth, self.inpheight), interpolation=cv2.INTER_AREA)
         dstimg = (dstimg.astype(np.float32)/255.0 - 0.5) / 0.5
         input_image = np.expand_dims(dstimg.transpose(2, 0, 1), axis=0).astype(np.float32)
