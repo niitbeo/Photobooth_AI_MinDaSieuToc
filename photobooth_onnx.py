@@ -31,17 +31,21 @@ class CodeFormerONNX:
         img_np = (img_np * 255.0).round().astype(np.uint8)
         return img_np
 
-    def process_face(self, srcimg, weight=0.7):
+    def process_face(self, srcimg, weight=0.7, beauty_level=0.85):
         # TIỀN XỬ LÝ: Tẩy mụn siêu tốc bằng thuật toán Nhiếp Ảnh (App Filter 360)
         # Giúp làm nhẵn các ổ mụn rỗ và lỗ chân lông to, tránh việc AI nhìn nhầm thành nếp nhăn
         smooth = srcimg.copy()
-        for _ in range(3):
-            smooth = cv2.bilateralFilter(smooth, 15, 60, 60)
-        # Phủ lại một lớp làm nét nhẹ để lấy lại chi tiết tóc/mắt bị mờ do cà mụn
-        gaussian = cv2.GaussianBlur(smooth, (0,0), 3.0)
-        sharpened = cv2.addWeighted(smooth, 1.5, gaussian, -0.5, 0)
-        # Trộn với ảnh gốc để có làn da mịn tự nhiên 85%
-        pre_processed_img = cv2.addWeighted(sharpened, 0.85, srcimg, 0.15, 0)
+        
+        if beauty_level > 0:
+            for _ in range(3):
+                smooth = cv2.bilateralFilter(smooth, 15, 60, 60)
+            # Phủ lại một lớp làm nét nhẹ để lấy lại chi tiết tóc/mắt bị mờ do cà mụn
+            gaussian = cv2.GaussianBlur(smooth, (0,0), 3.0)
+            sharpened = cv2.addWeighted(smooth, 1.5, gaussian, -0.5, 0)
+            # Trộn với ảnh gốc để có làn da mịn tự nhiên
+            pre_processed_img = cv2.addWeighted(sharpened, beauty_level, srcimg, 1.0 - beauty_level, 0)
+        else:
+            pre_processed_img = srcimg
 
         # Bây giờ mới ném khuôn mặt đã "đánh phấn mịn" này cho CodeFormer để nó làm cực sắc nét lại mắt/mũi/miệng
         dstimg = cv2.cvtColor(pre_processed_img, cv2.COLOR_BGR2RGB)
@@ -71,6 +75,7 @@ def main():
     parser.add_argument('-i', '--input_path', type=str, required=True, help='Ảnh gốc từ máy ảnh')
     parser.add_argument('-o', '--output_path', type=str, required=True, help='Ảnh sau khi làm nét')
     parser.add_argument('-w', '--weight', type=float, default=0.7, help='Fidelity weight')
+    parser.add_argument('-b', '--beauty', type=float, default=0.85, help='Mức độ đánh phấn làm mịn mụn (0.0 đến 1.0. Tắt là 0)')
     args = parser.parse_args()
 
     print(f"Đang xử lý bằng AI ONNX siêu thanh: {args.input_path}")
@@ -127,7 +132,7 @@ def main():
         crop_h, crop_w = face_crop.shape[:2]
 
         # Xử lý làm nét
-        restored_face = net.process_face(face_crop, weight=args.weight)
+        restored_face = net.process_face(face_crop, weight=args.weight, beauty_level=args.beauty)
         
         # Scale về kích thước gốc
         restored_face_resized = cv2.resize(restored_face, (crop_w, crop_h), interpolation=cv2.INTER_LINEAR)

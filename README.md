@@ -59,15 +59,16 @@ Bây giờ bạn chỉ cần gọi dòng lệnh Command Line (CLI) từ phần m
 
 **Cú pháp:**
 ```bash
-python photobooth_onnx.py -i <đường_dẫn_ảnh_khi_chụp> -o <đường_dẫn_ảnh_xuất_ra_in> -w <độ_ảo_cà_mặt>
+python photobooth_onnx.py -i <đường_dẫn_ảnh_khi_chụp> -o <đường_dẫn_ảnh_xuất_ra_in> -w <độ_nét_AI> -b <đánh_phấn_mụn>
 ```
 
 **Ví dụ:**
 ```bash
-.\venv\Scripts\python.exe photobooth_onnx.py -i "C:\DSLR_Booth\guest_01.jpg" -o "C:\DSLR_Booth\guest_01_AI.jpg" -w 0.7
+.\venv\Scripts\python.exe photobooth_onnx.py -i "C:\DSLR_Booth\guest_01.jpg" -o "C:\DSLR_Booth\guest_01_AI.jpg" -w 0.7 -b 0.85
 ```
 
-* **`-w` (Fidelity weight):** Số này điều chỉnh mức độ làm mịn. Dao động từ `0.0` đến `1.0`. Khuyên dùng cho Photobooth là `0.7` để giữ lại góc cạnh tự nhiên và không biến khách thành người lạ.
+* **`-w` (Fidelity weight):** Mức độ phục hồi chi tiết của lõi AI (chống ảo giác). Dao động từ `0.0` đến `1.0`. Khuyên dùng là `0.7` để giữ góc cạnh tự nhiên và không biến khách thành người lạ.
+* **`-b` (Beauty level):** Mức độ đánh phấn, cà mụn rỗ bằng bộ lọc trước khi AI xử lý. Dao động từ `0.0` (tắt) đến `1.0` (phẳng lỳ như da em bé). Khuyên dùng `0.85` cho buồng chụp để da dẻ nịnh mắt chân thực nhất.
 
 ## 🤝 Liên hệ
 *Bản quyền và tối ưu luồng AI bởi Tác Giả: Nguyễn Lê Trường.*
