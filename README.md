@@ -20,9 +20,10 @@ Bản siêu tốc này tích hợp thuật toán **Lõi kép**: Càn quét mụn
 
 ## 🚀 Tính năng nổi bật
 * **Không cần PyTorch/CUDA**: Chạy độc quyền bằng ONNX Runtime dựa vào sức mạnh thuần của CPU đa luồng.
-* **Tốc độ ánh sáng (Real-time)**: Xử lý 1 ảnh với hệ CPU Core i3 chỉ tốn ~13 giây (Tốc độ khoảng 6.5s/1 mặt), đủ sức gánh quy trình In ảnh của Photobooth.
-* **YuNet Face Detector (2023)**: Thay vì dùng HaarCascade cũ, phiên bản này được nhúng `YuNet` chuyên nghiệp giúp tỷ lệ nhận diện mặt người trống góc tối lên đến 99,99% (Không nhận diện nhầm áo/vách tường).
-* **CodeFormer ONNX (360MB)**: Trái tim bộ lọc giữ nguyên khả năng tẩy điểm mù lỗi lõm xuất sắc.
+* **Tốc độ Siêu Thanh (Real-time)**: Xử lý 1 ảnh với MỘT khuôn mặt trên hệ CPU Core i3 chỉ tốn **~7.5 giây**, đủ sức gánh quy trình in ảnh chớp nhoáng của Photobooth.
+* **OpenCV Beauty Filter (Lõi Phấn)**: Cơ chế tẩy nhọt mụn, sẹo rỗ, làm phẳng mịn da tự nhiên bằng thuốc súng Bilateral/MedianBlur siêu tốc trước khi AI khôi phục mặt, trị dứt điểm 100% bệnh ảo giác AI.
+* **YuNet Face Detector (2023)**: Thay vì dùng HaarCascade cũ, phiên bản này được nhúng `YuNet` chuyên nghiệp giúp tỷ lệ nhận diện mặt người trong góc tối lên đến 99,99% (Không nhận diện nhầm áo/vách tường).
+* **CodeFormer ONNX (360MB)**: Trái tim bộ lọc AI tái tạo chi tiết mắt, môi, sợi mi siêu thực.
 
 ---
 
