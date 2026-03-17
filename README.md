@@ -13,8 +13,6 @@
 ## 📸 Hình ảnh Thực tế (Trước - Sau)
 Bản siêu tốc này tích hợp thuật toán **Lõi kép**: Càn quét mụn rỗ bằng **Máy Cà Phấn OpenCV** trước khi đưa cho **Lõi AI CodeFormer** vẽ lại nét siêu thực (tránh hoàn toàn hiện tượng ảo giác rỗ mặt của AI gốc).
 <div align="center">
-  <img src="SoSanh_MunMax_Combo.jpg" width="800" alt="Kết quả xóa mụn 1">
-  <br><br>
   <img src="SoSanh_HienTuong.jpg" width="800" alt="Kết quả xóa mụn 2">
 </div>
 
