@@ -3,6 +3,10 @@
 Đây là phiên bản AI CodeFormer làm mịn da, xóa mụn, làm nét khuôn mặt **Siêu Nhẹ - Siêu Tốc** dành riêng cho các dòng máy tính cấu hình thấp (không có VGA, chỉ chạy CPU Core i3/i5) chuyên dùng cho buồng chụp ảnh Photobooth.
 
 > **Tác giả:** Nguyễn Lê Trường (Photobooth AI MinDa)
+> 
+> ☕ **Bonus ly cafe sáng:** Nếu source code siêu việt này giúp hệ thống Photobooth của bạn chạy mượt mà và kiếm được nhiều tiền, hãy mời tác giả một ly cafe sáng nhé! Cảm ơn bạn rất nhiều!
+> 
+> ![Ủng hộ Cafe Sáng](nganhag.png)
 
 ## 🚀 Tính năng nổi bật
 * **Không cần PyTorch/CUDA**: Chạy độc quyền bằng ONNX Runtime dựa vào sức mạnh thuần của CPU đa luồng.
