@@ -32,7 +32,19 @@ class CodeFormerONNX:
         return img_np
 
     def process_face(self, srcimg, weight=0.7):
-        dstimg = cv2.cvtColor(srcimg, cv2.COLOR_BGR2RGB)
+        # TIỀN XỬ LÝ: Tẩy mụn siêu tốc bằng thuật toán Nhiếp Ảnh (App Filter 360)
+        # Giúp làm nhẵn các ổ mụn rỗ và lỗ chân lông to, tránh việc AI nhìn nhầm thành nếp nhăn
+        smooth = srcimg.copy()
+        for _ in range(3):
+            smooth = cv2.bilateralFilter(smooth, 15, 60, 60)
+        # Phủ lại một lớp làm nét nhẹ để lấy lại chi tiết tóc/mắt bị mờ do cà mụn
+        gaussian = cv2.GaussianBlur(smooth, (0,0), 3.0)
+        sharpened = cv2.addWeighted(smooth, 1.5, gaussian, -0.5, 0)
+        # Trộn với ảnh gốc để có làn da mịn tự nhiên 85%
+        pre_processed_img = cv2.addWeighted(sharpened, 0.85, srcimg, 0.15, 0)
+
+        # Bây giờ mới ném khuôn mặt đã "đánh phấn mịn" này cho CodeFormer để nó làm cực sắc nét lại mắt/mũi/miệng
+        dstimg = cv2.cvtColor(pre_processed_img, cv2.COLOR_BGR2RGB)
         dstimg = cv2.resize(dstimg, (self.inpwidth, self.inpheight), interpolation=cv2.INTER_AREA)
         dstimg = (dstimg.astype(np.float32)/255.0 - 0.5) / 0.5
         input_image = np.expand_dims(dstimg.transpose(2, 0, 1), axis=0).astype(np.float32)
