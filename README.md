@@ -1,4 +1,4 @@
-# Photobooth AI MinDa Siêu Tốc (ONNX Runtime)
+# Photobooth AI MinDa Siêu Tốc (ONNX Runtime).
 
 Đây là phiên bản AI CodeFormer làm mịn da, xóa mụn, làm nét khuôn mặt **Siêu Nhẹ - Siêu Tốc** dành riêng cho các dòng máy tính cấu hình thấp (không có VGA, chỉ chạy CPU Core i3/i5) chuyên dùng cho buồng chụp ảnh Photobooth.
 
